@@ -6,14 +6,12 @@ from redis.commands.json.path import Path
 import json
 import ipdb
 
-# ----------------------------
-# Redis Setup
-# ----------------------------
 r = redis.Redis(host="ai.thewcl.com", port=6379, db=0, password="atmega328")
 REDIS_KEY = "tic_tac_toe:game_state"
 
 # ----------------------------
 # Data Model
+# Starter class for your game board. Rename and modify for your own game.
 # ----------------------------
 
 

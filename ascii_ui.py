@@ -2,9 +2,17 @@ import asyncio
 import websockets
 import json
 import os
+import argparse
 
-# Adjust this to match your game engine's WebSocket server address
-WEBSOCKET_URL = "ws://ai.thewcl.com:8700"
+# Parse required --team argument
+parser = argparse.ArgumentParser(description="ASCII UI for Tic Tac Toe")
+parser.add_argument("--team", required=True, help="Your team number (used as WebSocket port)")
+args = parser.parse_args()
+team_number = int(args.team)
+team_number_str = f"{team_number:02d}"
+
+# Build the WebSocket URL dynamically
+WEBSOCKET_URL = f"ws://ai.thewcl.com:87{team_number_str}"
 
 
 def clear_terminal():

@@ -4,11 +4,8 @@ import json
 import httpx
 import redis.asyncio as aioredis
 import websockets
+import os
 
-# Redis Pub/Sub setup
-r = aioredis.Redis(
-    host="ai.thewcl.com", port=6379, db=0, password="atmega328", decode_responses=True
-)
 redisPubSubKey = "ttt_game_state_changed"
 
 # FastAPI base URL
@@ -22,12 +19,23 @@ parser.add_argument(
 parser.add_argument(
     "--reset", action="store_true", help="Reset the board before starting the game."
 )
-parser.add_argument("--student", required=True, help="Your student number (00–15)")
+parser.add_argument("--team", required=True, help="Your team number (used as Redis DB number)")
 args = parser.parse_args()
 
 i_am_playing = args.player
-student_number = args.student
-WS_URL = f"ws://ai.thewcl.com:87{student_number}"
+team_number = int(args.team)
+team_number_str = f"{team_number:02d}"
+WS_URL = f"ws://ai.thewcl.com:87{team_number_str}"
+print(f"Connecting to WebSocket server at {WS_URL}")
+
+# Redis Pub/Sub setup
+r = aioredis.Redis(
+    host="ai.thewcl.com", port=6379, db=team_number, password=os.getenv("WCL_REDIS_PASSWORD"), decode_responses=True
+)
+redisPubSubKey = "ttt_game_state_changed"
+
+# FastAPI base URL
+BASE_URL = "http://localhost:8000"
 
 
 async def reset_board():
